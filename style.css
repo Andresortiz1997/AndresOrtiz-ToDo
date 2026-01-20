@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 15px;
+}
+
+.contenedor {
+    margin-bottom: 15px;
+}
+
+input {
+    padding: 6px;
+}
+
+button {
+    margin-left: 5px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+li button {
+    margin-left: 8px;
+}
+
+.completada {
+    text-decoration: line-through;
+    opacity: 0.6;
+}

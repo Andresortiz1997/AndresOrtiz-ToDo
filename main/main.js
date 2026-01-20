@@ -1,99 +1,112 @@
 
+class Tarea {
+    constructor(id, titulo, completada = false) {
+        this.id = id;
+        this.titulo = titulo;
+        this.completada = completada;
+    }
 
-const saludo=prompt("igresa tu nombre")
-
-
-const menu=
-"Elegi una de la siguientes opciones "+
-"1-agregar tarea "+ 
-"2- maotrar tarea "+ 
-"3- marcar tarea como hecha "+ 
-"4-eliminar tarea "+ 
-"5-salir"
-
-let opcion= ""
-let tareas= []
-
-
-function pedirTarea(){
-    let tarea= prompt("ingresa la tarea")
-    return tarea
-}
-
-const validarTarea= function(tarea){
-    return tarea !==  "" && tarea !== null
-}
-
-const mostrarTarea=()=>{
-    console.log("Lista de Tareas")
-    for(let i =1; i<tareas.length;i++){
-        console.log(i+ "" + tareas[i])
+    marcarCompleta() {
+        this.completada = true;
     }
 }
-alert("Hola "+ saludo + " Bienvenido al gestor de tareas")
-console.log("Hola "+ saludo + " Bienvenido al gestor de tareas")
 
-while (opcion!== "5"){
-    opcion=prompt(menu)
+let tareas = [];
+let contadorId = 1;
 
-    switch(opcion){
-        case "1":
-            let nuevaTarea= pedirTarea()
+const inputTarea = document.getElementById("inputTarea");
+const btnAgregar = document.getElementById("btnAgregar");
+const listaTareas = document.getElementById("listaTareas");
 
-            if(validarTarea(nuevaTarea)){
-                tareas.push(nuevaTarea)
-                alert("tarea agragada correctamente")
-            }else{
-                alert("tarea invalida")
-            }
-            break
-        
-        case"2":
-            if(tareas.length===0){
-                alert("no hay tareas cargadas")
-            }else{
-                mostrarTarea()
-                alert("las tareas se mostraron por consola")
-            }
-            break
+const cargarTareas = () => {
+    const datos = localStorage.getItem("tareas");
 
-        case"3":
-            if(tareas.length===0){
-                alert("no hay tarea por marcar")
-            }else{
-                mostrarTarea()
-                let indice= prompt("ingresa el numero de la tarea hecha")
-            }
-            if(indice>=0 && indice< tareas.length){
-                tareas[indice]=tareas[indice] + "[hecha]"
-                alert("tarea marcada como hecha")
+    if (datos) {
+        const tareasParseadas = JSON.parse(datos);
+        tareas = tareasParseadas.map(
+            t => new Tarea(t.id, t.titulo, t.completada)
+        );
 
-            }else{
-                alert("numero invalido")
-            }
-            break
+        contadorId = tareas.length > 0
+            ? Math.max(...tareas.map(t => t.id)) + 1
+            : 1;
+    }
+};
 
-        case"4":
-            if(tareas.length===0){
-                alert("no hay tarea por eliminar")
-            }else{
-                mostrarTarea()
-                let borrar=prompt("ingresa el numero de tarea a eliminaar")
+const guardarTareas = () => {
+    localStorage.setItem("tareas", JSON.stringify(tareas));
+};
 
-                if(borrar>=0 && borrar<tareas.length){
-                    tareas.splice(borrar,1)
-                    alert("tarea eliminada")
-                }else{
-                    alert("numero invalido")
-                }
-            }
-            break
+const contarVisita = () => {
+    let visitas = sessionStorage.getItem("visitas");
 
-        case"5":
-            alert("salir del programa")
-            break
-        
-        default:
-            alert("opciuon no valida")
-    }   
+    if (!visitas) {
+        sessionStorage.setItem("visitas", 1);
+    } else {
+        sessionStorage.setItem("visitas", Number(visitas) + 1);
+    }
+
+    console.log("Visitas en esta sesión:", sessionStorage.getItem("visitas"));
+};
+
+function agregarTarea() {
+    const texto = inputTarea.value;
+
+    if (texto === "") {
+        alert("La tarea no puede estar vacía");
+        return;
+    }
+
+    const nuevaTarea = new Tarea(contadorId, texto);
+    tareas.push(nuevaTarea);
+    contadorId++;
+
+    guardarTareas();
+    renderTareas();
+
+    inputTarea.value = "";
 }
+
+const renderTareas = () => {
+    listaTareas.innerHTML = "";
+
+    tareas.forEach(tarea => {
+        const li = document.createElement("li");
+        li.textContent = tarea.titulo;
+
+        if (tarea.completada) {
+            li.classList.add("completada");
+        }
+
+        const btnCompletar = document.createElement("button");
+        btnCompletar.textContent = "✔";
+        btnCompletar.addEventListener("click", () => completarTarea(tarea.id));
+
+        const btnEliminar = document.createElement("button");
+        btnEliminar.textContent = "✖";
+        btnEliminar.addEventListener("click", () => eliminarTarea(tarea.id));
+
+        li.appendChild(btnCompletar);
+        li.appendChild(btnEliminar);
+        listaTareas.appendChild(li);
+    });
+};
+
+const completarTarea = function(id) {
+    const tarea = tareas.find(t => t.id === id);
+    tarea.marcarCompleta();
+    guardarTareas();
+    renderTareas();
+};
+
+const eliminarTarea = (id) => {
+    tareas = tareas.filter(t => t.id !== id);
+    guardarTareas();
+    renderTareas();
+};
+
+btnAgregar.addEventListener("click", agregarTarea);
+
+cargarTareas();
+contarVisita();
+renderTareas();
