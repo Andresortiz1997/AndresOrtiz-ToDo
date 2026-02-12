@@ -1,23 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Andres Ortiz">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskDash | Premium Task Management</title>
 
-    <title>PrimeraPreentrega</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-    <h1>Gestor de tareas ToDo</h1>
 
-    <input type="text" id="inputTarea" placeholder="Escribi una tarea">
-    <button id="btnAgregar">Agregar</button>
+<aside class="barra-lateral">
+  <div class="logo">
+    <i data-lucide="layout-dashboard"></i>
+    <span>TaskDash</span>
+  </div>
 
-    <ul id="listaTareas"></ul>
+  <div class="perfil">
+    <p class="perfil-nombre">John Doe</p>
+    <p class="perfil-plan">Plan Pro</p>
+  </div>
 
-    <script
-        src="main/main.js">
-    </script>
+  <nav>
+    <ul class="menu">
+      <li><a class="menu-item activo" href="#"><i data-lucide="grid" size="18"></i> Dashboard</a></li>
+      <li><a class="menu-item" href="#"><i data-lucide="check-square" size="18"></i> Tareas</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main class="contenedor-principal">
+
+<header class="encabezado">
+  <div>
+    <h2>Mis Tareas</h2>
+    <p class="subtitulo">Gestiona tu flujo diario</p>
+  </div>
+  <button class="btn-nueva" id="boton-nueva-tarea">+ Nueva Tarea</button>
+</header>
+
+<section class="resumen">
+  <div class="tarjeta-stat"><p>Totales</p><h3>0</h3></div>
+  <div class="tarjeta-stat"><p>Activas</p><h3>0</h3></div>
+  <div class="tarjeta-stat"><p>Hechas</p><h3>0</h3></div>
+</section>
+
+<section>
+  <div class="filtros">
+    <div class="filtro activo">Todas</div>
+    <div class="filtro">Pendientes</div>
+    <div class="filtro">Completadas</div>
+  </div>
+  <div class="lista-tareas" id="lista-tareas"></div>
+</section>
+
+</main>
+
+<div class="modal-overlay" id="modal-tarea">
+  <div class="modal-contenido">
+    <h2>Nueva Tarea</h2>
+    <form id="formulario-tarea">
+
+      <div class="form-group">
+        <label>Nombre de la tarea</label>
+        <input id="tarea-nombre" type="text" required>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="tarea-descripcion" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Prioridad</label>
+        <select id="tarea-prioridad">
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-cancelar" id="btn-cerrar-modal">Cancelar</button>
+        <button type="submit" class="btn-guardar">Guardar Tarea</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
 </body>
 </html>
