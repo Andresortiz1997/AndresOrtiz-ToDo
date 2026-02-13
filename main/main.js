@@ -30,7 +30,7 @@ async function cargarTareas() {
     );
     renderTareas();
   } else {
-    const response = await fetch("../tareas.josn");
+    const response = await fetch("tareas.json");
     const data = await response.json();
     tareas = data.map(
       t => new Tarea(t.id, t.titulo, t.descripcion, t.prioridad, t.completada)
@@ -57,7 +57,8 @@ function renderTareas() {
         <h4>${tarea.titulo}</h4>
         <p>${tarea.descripcion}</p>
         <span class="prioridad prioridad-${tarea.prioridad}">
-          ${tarea.prioridad.toUpperCase()}
+          ${(tarea.prioridad || "baja").toUpperCase()}
+
         </span>
       </div>
       <div>
