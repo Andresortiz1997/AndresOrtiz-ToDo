@@ -1,35 +1,232 @@
+:root {
+  --fondo: #0f172a;
+  --tarjeta: #1e293b;
+  --primario: #22d3ee;
+  --texto: #f8fafc;
+  --texto-secundario: #94a3b8;
+  --borde: #334155;
+  --alta: #ef4444;
+  --media: #f59e0b;
+  --baja: #10b981;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+  background: var(--fondo);
+  color: var(--texto);
+  display: flex;
+  min-height: 100vh;
 }
 
-h1 {
-    margin-bottom: 15px;
+.barra-lateral {
+  width: 260px;
+  background: var(--tarjeta);
+  border-right: 1px solid var(--borde);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.contenedor {
-    margin-bottom: 15px;
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primario);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-input {
-    padding: 6px;
+.menu {
+  list-style: none;
 }
 
-button {
-    margin-left: 5px;
-    padding: 6px 10px;
-    cursor: pointer;
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  color: var(--texto-secundario);
+  text-decoration: none;
+  border-radius: 8px;
 }
 
-li {
-    margin-bottom: 8px;
+.menu-item.activo {
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--primario);
 }
 
-li button {
-    margin-left: 8px;
+.perfil {
+  background: rgba(15, 23, 42, 0.5);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.contenedor-principal {
+  flex-grow: 1;
+  padding: 2.5rem;
+  overflow-y: auto;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.btn-nueva {
+  background: var(--primario);
+  color: #000;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tarjeta-stat {
+  background: var(--tarjeta);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+}
+
+.filtros {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid var(--borde);
+  margin-bottom: 1.5rem;
+}
+
+.filtro {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--texto-secundario);
+}
+
+.filtro.activo {
+  color: var(--primario);
+  border-bottom: 2px solid var(--primario);
+}
+
+.lista-tareas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tarea {
+  background: var(--tarjeta);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.prioridad {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.prioridad-alta {
+  color: var(--alta);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.prioridad-media {
+  color: var(--media);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.prioridad-baja {
+  color: var(--baja);
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .completada {
-    text-decoration: line-through;
-    opacity: 0.6;
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contenido {
+  background: var(--tarjeta);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--borde);
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  color: var(--texto);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-cancelar {
+  background: transparent;
+  border: 1px solid var(--borde);
+  color: var(--texto);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-guardar {
+  background: var(--primario);
+  color: #000;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
