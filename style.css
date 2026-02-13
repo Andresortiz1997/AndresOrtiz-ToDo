@@ -55,11 +55,13 @@ body {
   color: var(--texto-secundario);
   text-decoration: none;
   border-radius: 8px;
+  size: 18;
 }
 
 .menu-item.activo {
   background: rgba(34, 211, 238, 0.1);
   color: var(--primario);
+  size: 18;
 }
 
 .perfil {

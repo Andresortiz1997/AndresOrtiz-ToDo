@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "titulo": "Estudiar JavaScript",
+    "descripcion": "Repasar clases y objetos",
+    "prioridad": "alta",
+    "completada": false
+  },
+  {
+    "id": 2,
+    "titulo": "Ir al gimnasio",
+    "descripcion": "Rutina de fuerza",
+    "prioridad": "media",
+    "completada": false
+  },
+  {
+    "id": 3,
+    "titulo": "Leer 20 páginas",
+    "descripcion": "Libro de programación",
+    "prioridad": "baja",
+    "completada": true
+  }
+]

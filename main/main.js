@@ -1,112 +1,140 @@
-
 class Tarea {
-    constructor(id, titulo, completada = false) {
-        this.id = id;
-        this.titulo = titulo;
-        this.completada = completada;
-    }
+  constructor(id, titulo, descripcion, prioridad, completada = false) {
+    this.id = id;
+    this.titulo = titulo;
+    this.descripcion = descripcion;
+    this.prioridad = prioridad;
+    this.completada = completada;
+  }
 
-    marcarCompleta() {
-        this.completada = true;
-    }
+  toggleEstado() {
+    this.completada = !this.completada;
+  }
 }
+
+const listaTareas = document.getElementById("lista-tareas");
+const modal = document.getElementById("modal-tarea");
+const botonNueva = document.getElementById("boton-nueva-tarea");
+const cerrarModal = document.getElementById("btn-cerrar-modal");
+const formulario = document.getElementById("formulario-tarea");
 
 let tareas = [];
-let contadorId = 1;
 
-const inputTarea = document.getElementById("inputTarea");
-const btnAgregar = document.getElementById("btnAgregar");
-const listaTareas = document.getElementById("listaTareas");
+async function cargarTareas() {
+  const tareasGuardadas = localStorage.getItem("tareas");
 
-const cargarTareas = () => {
-    const datos = localStorage.getItem("tareas");
-
-    if (datos) {
-        const tareasParseadas = JSON.parse(datos);
-        tareas = tareasParseadas.map(
-            t => new Tarea(t.id, t.titulo, t.completada)
-        );
-
-        contadorId = tareas.length > 0
-            ? Math.max(...tareas.map(t => t.id)) + 1
-            : 1;
-    }
-};
-
-const guardarTareas = () => {
-    localStorage.setItem("tareas", JSON.stringify(tareas));
-};
-
-const contarVisita = () => {
-    let visitas = sessionStorage.getItem("visitas");
-
-    if (!visitas) {
-        sessionStorage.setItem("visitas", 1);
-    } else {
-        sessionStorage.setItem("visitas", Number(visitas) + 1);
-    }
-
-    console.log("Visitas en esta sesión:", sessionStorage.getItem("visitas"));
-};
-
-function agregarTarea() {
-    const texto = inputTarea.value;
-
-    if (texto === "") {
-        alert("La tarea no puede estar vacía");
-        return;
-    }
-
-    const nuevaTarea = new Tarea(contadorId, texto);
-    tareas.push(nuevaTarea);
-    contadorId++;
-
-    guardarTareas();
+  if (tareasGuardadas) {
+    const data = JSON.parse(tareasGuardadas);
+    tareas = data.map(
+      t => new Tarea(t.id, t.titulo, t.descripcion, t.prioridad, t.completada)
+    );
     renderTareas();
-
-    inputTarea.value = "";
+  } else {
+    const response = await fetch("../tareas.josn");
+    const data = await response.json();
+    tareas = data.map(
+      t => new Tarea(t.id, t.titulo, t.descripcion, t.prioridad, t.completada)
+    );
+    guardarEnStorage();
+    renderTareas();
+  }
 }
 
-const renderTareas = () => {
-    listaTareas.innerHTML = "";
+function guardarEnStorage() {
+  localStorage.setItem("tareas", JSON.stringify(tareas));
+}
 
-    tareas.forEach(tarea => {
-        const li = document.createElement("li");
-        li.textContent = tarea.titulo;
+function renderTareas() {
+  listaTareas.innerHTML = "";
 
-        if (tarea.completada) {
-            li.classList.add("completada");
-        }
+  tareas.forEach(tarea => {
+    const div = document.createElement("div");
+    div.classList.add("tarea");
+    if (tarea.completada) div.classList.add("completada");
 
-        const btnCompletar = document.createElement("button");
-        btnCompletar.textContent = "✔";
-        btnCompletar.addEventListener("click", () => completarTarea(tarea.id));
+    div.innerHTML = `
+      <div>
+        <h4>${tarea.titulo}</h4>
+        <p>${tarea.descripcion}</p>
+        <span class="prioridad prioridad-${tarea.prioridad}">
+          ${tarea.prioridad.toUpperCase()}
+        </span>
+      </div>
+      <div>
+        <button onclick="toggleTarea(${tarea.id})">✔</button>
+        <button onclick="eliminarTarea(${tarea.id})">✖</button>
+      </div>
+    `;
 
-        const btnEliminar = document.createElement("button");
-        btnEliminar.textContent = "✖";
-        btnEliminar.addEventListener("click", () => eliminarTarea(tarea.id));
+    listaTareas.appendChild(div);
+  });
 
-        li.appendChild(btnCompletar);
-        li.appendChild(btnEliminar);
-        listaTareas.appendChild(li);
-    });
-};
+  actualizarResumen();
+  lucide.createIcons();
+}
 
-const completarTarea = function(id) {
-    const tarea = tareas.find(t => t.id === id);
-    tarea.marcarCompleta();
-    guardarTareas();
-    renderTareas();
-};
+function actualizarResumen() {
+  const totales = tareas.length;
+  const hechas = tareas.filter(t => t.completada).length;
+  const activas = totales - hechas;
 
-const eliminarTarea = (id) => {
-    tareas = tareas.filter(t => t.id !== id);
-    guardarTareas();
-    renderTareas();
-};
+  const tarjetas = document.querySelectorAll(".tarjeta-stat h3");
+  tarjetas[0].textContent = totales;
+  tarjetas[1].textContent = activas;
+  tarjetas[2].textContent = hechas;
+}
 
-btnAgregar.addEventListener("click", agregarTarea);
+function toggleTarea(id) {
+  const tarea = tareas.find(t => t.id === id);
+  tarea.toggleEstado();
+  guardarEnStorage();
+  renderTareas();
+}
+
+function eliminarTarea(id) {
+  tareas = tareas.filter(t => t.id !== id);
+  guardarEnStorage();
+  renderTareas();
+}
+
+formulario.addEventListener("submit", e => {
+  e.preventDefault();
+
+  const titulo = document.getElementById("tarea-nombre").value;
+  const descripcion = document.getElementById("tarea-descripcion").value;
+  const prioridad = document.getElementById("tarea-prioridad").value;
+
+  const nuevaTarea = new Tarea(
+    Date.now(),
+    titulo,
+    descripcion,
+    prioridad
+  );
+
+  tareas.push(nuevaTarea);
+  guardarEnStorage();
+  renderTareas();
+  formulario.reset();
+  modal.style.display = "none";
+
+  Swal.fire({
+    icon: "success",
+    title: "Tarea creada",
+    timer: 1500,
+    showConfirmButton: false
+  });
+});
+
+botonNueva.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+cerrarModal.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+window.toggleTarea = toggleTarea;
+window.eliminarTarea = eliminarTarea;
 
 cargarTareas();
-contarVisita();
-renderTareas();
+
